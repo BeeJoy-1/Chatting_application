@@ -21,3 +21,10 @@
     height: 100%;
     object-fit: cover;
 }
+
+.regPera {
+    font-size: 20px;
+    color: #11175D;
+    opacity: 0.5;
+    margin-bottom: 60px;
+}
