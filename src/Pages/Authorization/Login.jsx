@@ -10,6 +10,10 @@ import Banner from '../../assets/images/wine.jpg'
 import './Auth.css'
 import InputBox from '../../Components/Utilities/InputBox';
 import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import logval from '../../Components/LoginValidation/logval';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -47,6 +51,22 @@ const BootstrapButton = styled(Button)({
 
 
 const Login = () => {
+
+  const initialValues = {
+    email: '',
+    password: '',
+  }
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: logval,
+    onSubmit: (values,actions) => {
+      console.log(values);
+      actions.resetForm();
+      // alert(JSON.stringify(values, null, 2));
+    },
+  });
+
   return (
     <>
     <Box sx={{ flexGrow: 1 }}>
@@ -57,16 +77,44 @@ const Login = () => {
               Login to your account!
             </LoginHeading>
             <Images source={googleimg} className="googleimg"/>
-            <div className='inputbox'>
-              <InputBox variant="standard" label='Email Address'/>
-              <InputBox variant="standard" label= "Password"/>
-            </div>
-            <div className='logbtn'>
-              <BootstrapButton variant="contained" disableRipple>
-                Login to Continue
-              </BootstrapButton>
-            </div>
-            <p style={{fontSize: '17px', color: '#03014C', fontWeight: '400' }}>Don’t have an account ?<a href="/Registration" style={{color: '#EA6C00', fontWeight: '700'}}> Sign up</a></p>
+            <form onSubmit={formik.handleSubmit}>
+              <div className='inputbox'>
+                <div>
+                  <InputBox 
+                    id="email"
+                    name="email"
+                    type="email"
+                    onChange={formik.handleChange}
+                    value={formik.values.email}
+                    variant="standard" 
+                    label='Email Address'
+                  />
+                   {formik.touched.email && formik.errors.email ? (
+                    <div style={{color: "red",}}>{formik.errors.email}</div>
+                  ) : null}
+                </div>
+                <div>
+                  <InputBox 
+                    id="password"
+                    name="password"
+                    type="password"
+                    onChange={formik.handleChange}
+                    value={formik.values.password}
+                    variant="standard" 
+                    label= "Password"
+                  />
+                   {formik.touched.password && formik.errors.password ? (
+                    <div style={{color: "red",}}>{formik.errors.password}</div>
+                  ) : null}
+                </div>
+              </div>
+              <div className='logbtn'>
+                <BootstrapButton type='submit' variant="contained" disableRipple>
+                  Login to Continue
+                </BootstrapButton>
+              </div>
+            </form>
+            <p style={{fontSize: '17px', color: '#03014C', fontWeight: '400' }}>Don’t have an account ?<Link to="/Registration" style={{color: '#EA6C00', fontWeight: '700'}}> Sign up</Link></p>
           </div>
         </Grid>
         <Grid item xs={6}>

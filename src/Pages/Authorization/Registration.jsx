@@ -11,6 +11,7 @@ import './Auth.css'
 import InputBox from '../../Components/Utilities/InputBox';
 import Button from '@mui/material/Button';
 import board from '../../assets/images/board.jpg'
+import { Link } from 'react-router-dom';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -67,7 +68,7 @@ const Registration = () => {
                 Login to Continue
               </BootstrapButton>
             </div>
-            <p style={{fontSize: '17px', color: '#03014C', fontWeight: '400' }}>Don’t have an account ?<a href="/Registration" style={{color: '#EA6C00', fontWeight: '700'}}> Sign up</a></p>
+            <p style={{fontSize: '17px', color: '#03014C', fontWeight: '400' }}>Already  have an account ?<Link to="/" style={{color: '#EA6C00', fontWeight: '700'}}> Sign In</Link></p>
           </div>
         </Grid>
         <Grid item xs={6}>
