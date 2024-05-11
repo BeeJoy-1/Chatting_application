@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import logval from '../../Components/LoginValidation/logval';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -52,6 +53,8 @@ const BootstrapButton = styled(Button)({
 
 const Login = () => {
 
+  const auth = getAuth();
+
   const initialValues = {
     email: '',
     password: '',
@@ -63,6 +66,17 @@ const Login = () => {
     onSubmit: (values,actions) => {
       console.log(values);
       actions.resetForm();
+      signInWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+
+      })
+      .catch((error) => {
+        // const errorCode = error.code;
+        // const errorMessage = error.message;
+        console.log(error);
+      });
       // alert(JSON.stringify(values, null, 2));
     },
   });

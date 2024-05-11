@@ -13,7 +13,8 @@ import board from '../../assets/images/board.jpg'
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import Regval from '../../Components/LoginValidation/Regval';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification  } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile   } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -50,7 +51,8 @@ const BootstrapButton = styled(Button)({
 });
 
 const Registration = () => {
-
+  
+  const db = getDatabase();
   const auth = getAuth();
 
   const initialValues = {
@@ -71,17 +73,25 @@ const Registration = () => {
         console.log(userCredential);
         sendEmailVerification(auth.currentUser)
         .then(() => {
-          // Email verification sent!
-          // ...
-        });
-        // const user = userCredential.user;
+          updateProfile(auth.currentUser, {
+            displayName: values.FullName, 
+            photoURL: ""
+          }).then(() => {
+            set(ref(db, 'users/' + userCredential.user.uid), {
+              displayName: userCredential.user.displayName,
+              email: userCredential.user.email,
+              profile_picture : userCredential.user.photoURL
+            }).then(()=> {
+              console.log("real time data is created");
+            });
+          }).catch((error) => {
 
+          });
+
+        });
       })
       .catch((error) => {
         console.log(error);
-        // const errorCode = error.code;
-        // const errorMessage = error.message;
-
       });
       // alert(JSON.stringify(values, null, 2));
     },
