@@ -15,6 +15,10 @@ import { useFormik } from 'formik';
 import Regval from '../../Components/LoginValidation/Regval';
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile   } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
+import { ToastContainer, toast } from 'react-toastify';
+import { PuffLoader } from 'react-spinners';
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -52,8 +56,11 @@ const BootstrapButton = styled(Button)({
 
 const Registration = () => {
   
+  const [loading,setLoading] = useState(false)
+
   const db = getDatabase();
   const auth = getAuth();
+  const navigate = useNavigate();
 
   const initialValues = {
     FullName: '',
@@ -67,6 +74,7 @@ const Registration = () => {
     onSubmit: (values,actions) => {
       console.log(values);
       actions.resetForm();
+      setLoading(true)
 
       createUserWithEmailAndPassword(auth, values.email, values.password)
       .then((userCredential) => {
@@ -82,16 +90,22 @@ const Registration = () => {
               email: userCredential.user.email,
               profile_picture : userCredential.user.photoURL
             }).then(()=> {
+              toast("Registration Sucessfull!...")
               console.log("real time data is created");
+              setLoading(false)
+              setTimeout( ()=>{
+                navigate("/");
+              },2000)
             });
           }).catch((error) => {
-
+            setLoading(false)
           });
 
         });
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false)
       });
       // alert(JSON.stringify(values, null, 2));
     },
@@ -99,9 +113,26 @@ const Registration = () => {
 
   return (
     <>
+    { loading &&
+      <div className='loader'>
+        <PuffLoader color="#fff" size="100" />
+      </div>
+    }
     <Box sx={{ flexGrow: 1 }}>
+    <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        />
       <Grid container spacing={2}>
-        <Grid item xs={6} style={{display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Grid item xs={6} style={{display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
           <div>
             <LoginHeading variant="h4" component="h4">
               Get started with easily register
@@ -116,7 +147,7 @@ const Registration = () => {
                       type="text"
                       onChange={formik.handleChange}
                       value={formik.values.FullName}
-                      variant="standard" 
+                      variant="outlined" 
                       label='FullName'
                     />
                     {formik.touched.FullName && formik.errors.FullName ? (
@@ -130,7 +161,7 @@ const Registration = () => {
                     type="email"
                     onChange={formik.handleChange}
                     value={formik.values.email}
-                    variant="standard" 
+                    variant="outlined" 
                     label='Email Address'
                   />
                    {formik.touched.email && formik.errors.email ? (
@@ -144,7 +175,7 @@ const Registration = () => {
                     type="password"
                     onChange={formik.handleChange}
                     value={formik.values.password}
-                    variant="standard" 
+                    variant="outlined" 
                     label= "Password"
                   />
                    {formik.touched.password && formik.errors.password ? (
@@ -154,7 +185,7 @@ const Registration = () => {
               </div>
               <div className='logbtn'>
                 <BootstrapButton type='submit' variant="contained" disableRipple>
-                  Login to Continue
+                  Sign Up
                 </BootstrapButton>
               </div>
             </form>

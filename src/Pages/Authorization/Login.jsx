@@ -15,6 +15,10 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import logval from '../../Components/LoginValidation/logval';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { BeatLoader } from 'react-spinners';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -53,7 +57,10 @@ const BootstrapButton = styled(Button)({
 
 const Login = () => {
 
+  const [loader, setLoader] = useState(false)
+
   const auth = getAuth();
+  const navigate = useNavigate();
 
   const initialValues = {
     email: '',
@@ -64,18 +71,27 @@ const Login = () => {
     initialValues: initialValues,
     validationSchema: logval,
     onSubmit: (values,actions) => {
-      console.log(values);
-      actions.resetForm();
+      // console.log(values);
+      setLoader(true)
       signInWithEmailAndPassword(auth, values.email, values.password)
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
-
+        actions.resetForm();
+        if(user.emailVerified){
+          navigate("/home");
+          setLoader(false)
+        }else{
+          toast("Please verify your email!...")
+          setLoader(false)
+        }
       })
       .catch((error) => {
         // const errorCode = error.code;
         // const errorMessage = error.message;
         console.log(error);
+        toast("Invalid Credentials......")
+        setLoader(false)
       });
       // alert(JSON.stringify(values, null, 2));
     },
@@ -84,6 +100,18 @@ const Login = () => {
   return (
     <>
     <Box sx={{ flexGrow: 1 }}>
+    <ToastContainer
+      position="top-right"
+      autoClose={2000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="dark"
+      />
       <Grid container spacing={2}>
         <Grid item xs={6} style={{display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div>
@@ -123,8 +151,12 @@ const Login = () => {
                 </div>
               </div>
               <div className='logbtn'>
-                <BootstrapButton type='submit' variant="contained" disableRipple>
-                  Login to Continue
+                <BootstrapButton disabled={loader} type='submit' variant="contained" disableRipple>
+                  {loader ?
+                    <BeatLoader color="#fff" size="26px" />
+                    :
+                    "Login to Continue" 
+                  }
                 </BootstrapButton>
               </div>
             </form>
