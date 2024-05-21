@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import logval from '../../Components/LoginValidation/logval';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
@@ -61,10 +61,31 @@ const Login = () => {
 
   const auth = getAuth();
   const navigate = useNavigate();
+  const provider = new GoogleAuthProvider();
 
   const initialValues = {
     email: '',
     password: '',
+  }
+
+  let handleGoogleLogin = () => {
+    signInWithPopup(auth, provider)
+  .then((result) => {
+   
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+   
+    const user = result.user;
+   
+  }).catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  
+    const email = error.customData.email;
+  
+    const credential = GoogleAuthProvider.credentialFromError(error);
+  
+  });
   }
 
   const formik = useFormik({
@@ -118,7 +139,7 @@ const Login = () => {
             <LoginHeading variant="h4" component="h4">
               Login to your account!
             </LoginHeading>
-            <Images source={googleimg} className="googleimg"/>
+            <Images onClick={handleGoogleLogin} source={googleimg} className="googleimg"/>
             <form onSubmit={formik.handleSubmit}>
               <div className='inputbox'>
                 <div>
