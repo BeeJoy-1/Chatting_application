@@ -14,11 +14,13 @@ import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import logval from '../../Components/LoginValidation/logval';
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut} from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { BeatLoader } from 'react-spinners';
+import { useSelector, useDispatch } from 'react-redux'
+import { incrementByAmount } from '../../slices/authSlice';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -62,6 +64,7 @@ const Login = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const provider = new GoogleAuthProvider();
+  const dispatch = useDispatch()
 
   const initialValues = {
     email: '',
@@ -100,11 +103,18 @@ const Login = () => {
         console.log(user);
         actions.resetForm();
         if(user.emailVerified){
+          localStorage.setItem("LoggedInUser", JSON.stringify(user))
+          dispatch(incrementByAmount(user))
           navigate("/home");
           setLoader(false)
         }else{
           toast("Please verify your email!...")
           setLoader(false)
+          signOut(auth).then(() => {
+
+          }).catch((error) => {
+            // An error happened.
+          });
         }
       })
       .catch((error) => {
