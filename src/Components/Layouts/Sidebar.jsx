@@ -27,6 +27,11 @@ const Sidebar = () => {
 
   return (
     <>
+      <div className='sidebarmain'>
+        <div >
+
+        </div>
+      </div>
       <div>
         <button onClick={handleSignOut}>Logout</button>
         <p>
