@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './homepage.css'
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, push, set } from "firebase/database";
 import { useSelector, useDispatch } from 'react-redux'
 
 
@@ -9,7 +9,7 @@ const UserList = () => {
   const db = getDatabase();
   const [UserList, setUserList] = useState([])
   const data = useSelector((state) => state.LoggedInUserData.value)
-  console.log(data.uid);
+
   
   useEffect(()=> {
     const usersRef = ref(db, 'users');
@@ -24,8 +24,20 @@ const UserList = () => {
     });
   },[])
 
-  console.log(UserList);
 
+    let handleFriendRequest = (freqinfo) => {
+      console.log(freqinfo);
+      set(push(ref(db, "friendrequest" )),{
+        senderID: data.uid,
+        senderEmail: data.email,
+        senderName: data.displayName,
+        receiverID: freqinfo.id,
+        receiverEmail: freqinfo.email,
+        receiverName: freqinfo.displayName
+      }).then(()=>{
+        console.log("ok");
+      })
+    }
 
   return (
     <div className='box'>
@@ -40,7 +52,7 @@ const UserList = () => {
                 <p>MERN 2306</p>
               </div>
               <div>
-                <button>Add</button>
+                <button onClick={() => handleFriendRequest(item)}>Add</button>
               </div>
             </div>
           </div>
