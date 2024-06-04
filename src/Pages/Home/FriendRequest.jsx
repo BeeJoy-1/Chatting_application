@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import UserList from '../../Components/home/UserList'
-import { getDatabase, ref, onValue, push, set } from "firebase/database";
+import { getDatabase, ref, onValue, push, set, remove } from "firebase/database";
 import { useSelector, useDispatch } from 'react-redux'
 
 const FriendRequest = () => {
@@ -21,6 +21,29 @@ const FriendRequest = () => {
           setfriendReqList(arr)
         });
       },[])
+
+      // Request Delete
+      const handleReqDelete = (deleteinfo)=> {
+        remove(ref(db, "friendrequest/" + deleteinfo.id )).then(()=>{
+
+        })
+      }
+
+      // Confirm Request 
+       const handleReqConfirm = (confirminfo) => {
+        set(push(ref(db, "friends" )),{
+          senderID: confirminfo.senderID,
+          senderEmail: confirminfo.senderEmail,
+          senderName: confirminfo.senderName,
+          receiverID: confirminfo.receiverID,
+          receiverEmail: confirminfo.receiverEmail,
+          receiverName: confirminfo.receiverName
+        }).then(()=>{
+          remove(ref(db, "friendrequest/" + confirminfo.id )).then(()=>{
+
+          })
+        })
+       }
     
   return (
     <div className='box'>
@@ -35,8 +58,8 @@ const FriendRequest = () => {
               <p>MERN 2306</p>
             </div>
             <div>
-              <button>Confirm</button>
-              <button>Delete</button>
+              <button onClick={()=>handleReqConfirm(item)}>Confirm</button>
+              <button onClick={()=>handleReqDelete(item)}>Delete</button>
             </div>
           </div>
         </div>

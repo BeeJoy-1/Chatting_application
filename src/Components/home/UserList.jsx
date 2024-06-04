@@ -8,9 +8,11 @@ const UserList = () => {
 
   const db = getDatabase();
   const [UserList, setUserList] = useState([])
+  const [FriendReqlist, setFriendReqlist] = useState([])
   const data = useSelector((state) => state.LoggedInUserData.value)
 
   
+  // All user list 
   useEffect(()=> {
     const usersRef = ref(db, 'users');
     onValue(usersRef, (snapshot) => {
@@ -24,6 +26,20 @@ const UserList = () => {
     });
   },[])
 
+  // Friend request list 
+  useEffect(()=> {
+    const usersRef = ref(db, 'friendrequest');
+    onValue(usersRef, (snapshot) => {
+      let arr = []
+      snapshot.forEach((item) => {
+        if(data.uid == item.val().senderID || data.uid == item.val().receiverID){
+          arr.push(item.val().senderID + item.val().receiverID)
+        }
+      })
+      setFriendReqlist(arr)
+    });
+  },[])
+  
 
     let handleFriendRequest = (freqinfo) => {
       console.log(freqinfo);
@@ -51,9 +67,12 @@ const UserList = () => {
                 <h4>{item.displayName}</h4>
                 <p>MERN 2306</p>
               </div>
-              <div>
+              {FriendReqlist.includes(data.uid + item.id) || FriendReqlist.includes(item.id + data.uid)
+                ?
+                <button>Cancel</button>
+                :
                 <button onClick={() => handleFriendRequest(item)}>Add</button>
-              </div>
+              }
             </div>
           </div>
         ))
