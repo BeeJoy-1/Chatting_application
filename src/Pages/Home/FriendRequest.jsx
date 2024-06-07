@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import UserList from '../../Components/home/UserList'
 import { getDatabase, ref, onValue, push, set, remove } from "firebase/database";
 import { useSelector, useDispatch } from 'react-redux'
+import { Alert } from '@mui/material';
 
 const FriendRequest = () => {
 
@@ -49,7 +50,8 @@ const FriendRequest = () => {
     <div className='box'>
     <h1 className='header'>Friend Requests</h1>
     <div className='useritembox'>
-      {friendReqList.map((item,index)=> (
+      {friendReqList.length > 0 ?
+        friendReqList.map((item,index)=> (
         <div key={index} className='useritem'>
           <div className="imgbox"></div>
           <div className="userinfo">
@@ -64,6 +66,8 @@ const FriendRequest = () => {
           </div>
         </div>
       ))
+      :
+      <Alert severity="info">No Request Found</Alert>
       }
     </div>
   </div>

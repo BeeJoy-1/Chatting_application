@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './homepage.css'
 import { getDatabase, ref, onValue, push, set } from "firebase/database";
 import { useSelector, useDispatch } from 'react-redux'
+import { Alert } from '@mui/material';
 
 
 const UserList = () => {
@@ -9,6 +10,7 @@ const UserList = () => {
   const db = getDatabase();
   const [UserList, setUserList] = useState([])
   const [FriendReqlist, setFriendReqlist] = useState([])
+  const [Friends, setFriends] = useState([])
   const data = useSelector((state) => state.LoggedInUserData.value)
 
   
@@ -39,6 +41,20 @@ const UserList = () => {
       setFriendReqlist(arr)
     });
   },[])
+
+  // Friend List
+  useEffect(()=> {
+    const usersRef = ref(db, 'friends');
+    onValue(usersRef, (snapshot) => {
+      let arr = []
+      snapshot.forEach((item) => {
+        if(item.val().senderID == data.uid || item.val().receiverID == data.uid){
+          arr.push(item.val().senderID + item.val().receiverID )
+        }
+      })
+      setFriends(arr)
+    });
+  },[])
   
 
     let handleFriendRequest = (freqinfo) => {
@@ -59,7 +75,8 @@ const UserList = () => {
     <div className='box'>
       <h1 className='header'>Users</h1>
       <div className='useritembox'>
-        {UserList.map((item,index)=> (
+        {UserList.length > 0 ?
+          UserList.map((item,index)=> (
           <div key={index} className='useritem'>
             <div className="imgbox"></div>
             <div className="userinfo">
@@ -71,11 +88,17 @@ const UserList = () => {
                 ?
                 <button>Cancel</button>
                 :
-                <button onClick={() => handleFriendRequest(item)}>Add</button>
+                  Friends.includes(data.uid + item.id) || Friends.includes(item.id + data.uid)
+                  ?
+                  <button disabled >Friend</button>
+                  :
+                  <button onClick={() => handleFriendRequest(item)}>Add</button>
               }
             </div>
           </div>
-        ))
+        )) 
+        :
+        <Alert severity="info">No Suggest User Found</Alert>
         }
       </div>
     </div>
