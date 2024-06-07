@@ -13,6 +13,7 @@ import Message from './Pages/Message/Message'
 import Notification from './Pages/Notification/Notification'
 import Settings from './Pages/Settings/Settings'
 import UserLoggedIn from "./PrivateRoutes/UserLoggedIn";
+import Profile from "./Pages/Profile/Profile";
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
             <Route path="/Message" element={<Message/>}/>
             <Route path="/Notification" element={<Notification/>}/>
             <Route path="/Settings" element={<Settings/>}/>
+            <Route path="/Profile/:id" element={<Profile/>}/>
           </Route>
         </Route>
         <Route path="/" element={<Login/>} />

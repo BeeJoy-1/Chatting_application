@@ -3,6 +3,8 @@ import './homepage.css'
 import { getDatabase, ref, onValue, push, set } from "firebase/database";
 import { useSelector, useDispatch } from 'react-redux'
 import { Alert } from '@mui/material';
+import { Link } from 'react-router-dom';
+
 
 
 const UserList = () => {
@@ -81,7 +83,9 @@ const UserList = () => {
             <div className="imgbox"></div>
             <div className="userinfo">
               <div>
-                <h4>{item.displayName}</h4>
+                <Link to={`/Profile/${item.id}`}>
+                  <h4>{item.displayName}</h4>
+                </Link>
                 <p>MERN 2306</p>
               </div>
               {FriendReqlist.includes(data.uid + item.id) || FriendReqlist.includes(item.id + data.uid)
