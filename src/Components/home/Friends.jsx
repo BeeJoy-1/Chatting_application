@@ -33,7 +33,7 @@ const Friends = () => {
                 <div className="imgbox"></div>
                 <div className="userinfo">
                     <div>
-                    <h4>{item.receiverID == data.uid 
+                    <h4 style={{paddingBottom: "5px"}}>{item.receiverID == data.uid 
                         ?
                         item.senderName 
                         :

@@ -84,7 +84,7 @@ const UserList = () => {
             <div className="userinfo">
               <div>
                 <Link to={`/Profile/${item.id}`}>
-                  <h4>{item.displayName}</h4>
+                  <h4 style={{paddingBottom: "5px"}}>{item.displayName}</h4>
                 </Link>
                 <p>MERN 2306</p>
               </div>

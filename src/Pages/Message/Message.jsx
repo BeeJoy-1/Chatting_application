@@ -1,8 +1,13 @@
 import React from 'react'
+import MessageFriend from './MessageFriend'
+import MessageBox from './MessageBox'
 
 const Message = () => {
   return (
-    <div>Message</div>
+    <div style={{display: "flex", gap: "35px", marginTop: "34px"}}>
+      <MessageFriend/>
+      <MessageBox/>
+    </div>
   )
 }
 
