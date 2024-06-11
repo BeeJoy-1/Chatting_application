@@ -2,12 +2,16 @@ import { Alert } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { getDatabase, ref, onValue, push, set } from "firebase/database";
 import { useSelector, useDispatch } from 'react-redux'
+import { ActiveChatUser } from '../../slices/ActiveMsgSlice';
 
 const MessageFriend = () => {
 
     const db = getDatabase();
     const data = useSelector((state) => state.LoggedInUserData.value)
+    const activeChatData = useSelector((state) => state.ActiveChat.value)
     const [friendsList, setfriendsList] = useState([])
+    const dispatch = useDispatch()
+    // console.log(activeChatData);
 
     useEffect(()=> {
         const usersRef = ref(db, 'friends');
@@ -22,6 +26,10 @@ const MessageFriend = () => {
         });
       },[])
 
+      const handleChat = (chatinfo) => {
+        dispatch(ActiveChatUser(chatinfo))
+      }
+
 
   return (
     <div className='box msg'>
@@ -29,7 +37,7 @@ const MessageFriend = () => {
         <div className='useritembox msg'>
          {friendsList.length > 0 ?
             friendsList.map((item,index) => (
-                <div key={index} className='useritem msg'>
+                <div onClick={(e)=> handleChat(item)} key={index} className='useritem msg'>
                     <div className="imgbox"></div> 
                     <div className="userinfo">
                         <div>

@@ -57,6 +57,15 @@ a {
     height: 850px;
 }
 
+.select {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    font-style: italic;
+    font-size: 20px;
+}
+
 .msgmain {
     width: 1150px;
     height: 850px;
@@ -99,4 +108,73 @@ a {
 
 .useritembox.msg {
     height: 720px;
+}
+
+.msgbody{
+    height: 690px;
+    padding: 15px 25px;
+    overflow-y: scroll;
+    /* scrollbar-width: none; */
+}
+.msgfooter{
+    background-color: blueviolet;
+    padding: 10px 25px;
+    height: 70px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.footertings {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.msginput {
+    width: 300px;
+    padding: 6px 10px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    height: 45px;
+}
+
+.footerbtn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.sendermsg {
+    background-color: rgb(183, 128, 234);
+    color: white;
+    display: inline-block;
+    padding: 8px;
+    border-radius: 5px;
+    max-width: 70%;
+}
+
+.receivermsg {
+    background-color: rgb(213, 205, 205);
+    color: white;
+    display: inline-block;
+    padding: 8px;
+    border-radius: 5px;
+    max-width: 70%;
+}
+
+.sendmain {
+    display: flex;
+    justify-content: end;
+    padding-bottom: 10px;
+}
+
+.receivemain {
+    display: flex;
+    justify-content: start;
+    padding-bottom: 10px;
 }
