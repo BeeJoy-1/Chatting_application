@@ -171,10 +171,12 @@ a {
     display: flex;
     justify-content: end;
     padding-bottom: 10px;
+    padding-top: 10px;
 }
 
 .receivemain {
     display: flex;
     justify-content: start;
     padding-bottom: 10px;
+    padding-top: 10px;
 }

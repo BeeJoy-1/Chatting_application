@@ -1,16 +1,50 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { getDatabase, ref, onValue, push, set, remove } from "firebase/database";
+import { useSelector, useDispatch } from 'react-redux'
 
 const MessageBox = () => {
 
   const activeChatData = useSelector((state) => state.ActiveChat.value)
   const data = useSelector((state) => state.LoggedInUserData.value)
+  const db = getDatabase();
 
   const [msgtext, setmsgtext] = useState("")
+  const [Allmsg, setAllmsg] = useState([])
+
   // console.log(msgtext);
+
+  // Message Write 
   const handleSubmit = () => {
+    set(push(ref(db, "Message" )),{
+      senderID: data.uid,
+      senderName: data.displayName,
+      senderEmail: data.email,
+      receiverID: activeChatData.senderID == data.uid ? activeChatData.receiverID : activeChatData.senderID,
+      receiverName: activeChatData.senderID == data.uid ? activeChatData.receiverName : activeChatData.senderName,
+      receiverEmail: activeChatData.senderID == data.uid ? activeChatData.receiverEmail : activeChatData.senderEmail,
+      message: msgtext,
+    }).then(() => {
+      // console.log("msg sent");
+    })
     // console.log(msgtext);
   }
+
+  // Message Read
+  useEffect(()=> {
+    const usersRef = ref(db, 'Message');
+    onValue(usersRef, (snapshot) => {
+      let arr = []
+      let activeid = data.uid == activeChatData?.senderID ? activeChatData?.receiverID : activeChatData?.senderID
+      snapshot.forEach((item) => {
+        if((item.val().senderID == data.uid && item.val().receiverID == activeid) || (item.val().senderID == activeid  && item.val().receiverID == data.uid)){
+            arr.push({...item.val(), id: item.key})
+        }
+      })
+      setAllmsg(arr)
+    });
+  },[activeChatData])
+
+  // console.log(Allmsg);
 
   return (
     <>{activeChatData ?
@@ -28,12 +62,18 @@ const MessageBox = () => {
               </div>
           </div>
           <div className="msgbody">
-            <div className='sendmain'>
-              <p className="sendermsg">HELLO</p>
-            </div>
-            <div className='receivemain'>
-              <p className="receivermsg">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Pariatur, doloremque quasi. Veniam iure quam dolor fuga alias, accusamus aspernatur molestiae, nobis, unde veritatis placeat sint.</p>
-            </div>
+            {Allmsg.map((item,index) => (
+              item.senderID == data.uid ?
+              <div key={index} className='sendmain'>
+                <p className="sendermsg">{item.message}</p>
+              </div>
+              :
+              <div key={index} className='receivemain'>
+                <p className="receivermsg">{item.message}</p>
+              </div>
+            ))
+
+            }
           </div>
           <div className="msgfooter">
             <div className='footertings'>
